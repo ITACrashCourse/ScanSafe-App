@@ -1,4 +1,4 @@
-#1 create virtual environment
+# 1 create virtual environment
 """
 mkdir myproject
 cd myproject
