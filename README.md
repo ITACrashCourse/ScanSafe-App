@@ -14,3 +14,8 @@ venv\Scripts\activate
 """
 pip install Flask
 """
+# run local server
+be sure you are in a folder where run.py resides
+"""
+python run.py
+"""
