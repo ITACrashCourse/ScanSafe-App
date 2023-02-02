@@ -1,4 +1,4 @@
-from market import app
+from flask_project import app
 from flask import render_template
 
 @app.route('/')
