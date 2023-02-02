@@ -6,7 +6,7 @@ import requests
 import urllib
 from urllib.parse import urlparse
 
-from config import DevelopmentConfig
+from .config import Config
 
 
 class IPQS:
@@ -14,14 +14,14 @@ class IPQS:
     IP Quality Score class used to send request to IPQualityScore API and get results about url.
     """
 
-    key = DevelopmentConfig.IPQS_SECRET_KEY  # API SECRET KEY
+    key = Config.IPQS_SECRET_KEY  # API SECRET KEY
 
     def malicious_url_scanner_api(self, url: str, vars: dict = {}) -> dict:
-        url = "https://www.ipqualityscore.com/api/json/url/%s/%s" % (
+        url = Config.IPQS_URL % (
             self.key,
             urllib.parse.quote_plus(url),
         )
-        scan_result = requests.get(url, params=vars)
+        scan_result = requests.get(url, timeout=30, params=vars)
         return json.loads(scan_result.text)
 
 
