@@ -6,6 +6,4 @@ app.config.from_object(DevelopmentConfig)
 
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+from flask_project import routes

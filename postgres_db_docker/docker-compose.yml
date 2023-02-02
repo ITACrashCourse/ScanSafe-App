@@ -1,0 +1,16 @@
+version: "3.8"
+networks:
+  network_db:
+    ipam:
+      driver: bridge
+      config:
+      - subnet: 192.168.1.0/24
+services:   
+  db:
+    build: ./database/
+    networks:
+      network_db:
+        ipv4_address: 192.168.1.33
+    env_file: ./env/.env
+    healthcheck:
+      test: "exit 0"
