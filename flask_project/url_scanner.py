@@ -2,9 +2,11 @@
 Url scanner module to work with urls/domains/ips.
 """
 import json
-import requests
+import socket
 import urllib
 from urllib.parse import urlparse
+
+import requests
 
 from .config import Config
 
@@ -31,3 +33,10 @@ def get_domain(url: str) -> str:
     """
     parsed_url = urlparse(url)
     return parsed_url.netloc
+
+def get_ip(url: str) -> str:
+    """
+    Input url, output ip of url.
+    """
+    ip_address = socket.gethostbyname(url)
+    return ip_address
