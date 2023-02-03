@@ -38,5 +38,6 @@ def get_ip(url: str) -> str:
     """
     Input url, output ip of url.
     """
-    ip_address = socket.gethostbyname(url)
-    return ip_address
+    pass
+    # ip_address = socket.gethostbyname(url)
+    # return ip_address

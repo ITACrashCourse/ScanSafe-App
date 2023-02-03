@@ -35,7 +35,7 @@ class User(db.Model):
 
 
 class IP_address(db.Model):
-    __tablename__ = "ip_adress"
+    __tablename__ = "ip_address"
 
     ip_id = db.Column(db.Integer, primary_key=True)
     ip_address = db.Column(db.String(64), nullable=False)
@@ -52,6 +52,7 @@ class IP_address(db.Model):
     parking = db.Column(db.Boolean)
     dns_server = db.Column(db.Boolean)
     dns_valid = db.Column(db.Boolean)
+    urls = db.relationship("URL", backref='ip_address')
 
 
 class Domains(db.Model):
@@ -61,14 +62,14 @@ class Domains(db.Model):
     domain_name = db.Column(db.String(64), nullable=False)
     record_created_at = db.Column(db.DateTime, server_default=func.now())
     record_updated_at = db.Column(db.DateTime, onupdate=func.now())
-
+    urls = db.relationship("URL", backref='domain')
 
 class URL(db.Model):
     __tablename__ = "url"
 
     url_id = db.Column(db.Integer, primary_key=True)
     domain_id = db.Column(db.Integer, db.ForeignKey("domains.domain_id"))
-    ip_id = db.Column(db.Integer, db.ForeignKey("ip_adress.ip_id"))
+    ip_id = db.Column(db.Integer, db.ForeignKey("ip_address.ip_id"))
     url = db.Column(db.String(64))
     record_created_at = db.Column(db.DateTime, server_default=func.now())
     last_scan = db.Column(db.DateTime, server_default=func.now())
