@@ -16,11 +16,12 @@ def add_new_records(ipqs_data: dict, url:str):
         phising=ipqs_data["phishing"],
         spamming=ipqs_data["spamming"],
         parking=ipqs_data["spamming"],
-        dns_server="unknown", # TODO
+        dns_server=False, # TODO
         dns_valid=ipqs_data["dns_valid"]
     )
     db.session.add(ip_address_obj)
     db.session.flush()
+    db.session.commit()
 
     domain_obj = Domains(
         domain_name=ipqs_data["domain"],
@@ -29,10 +30,11 @@ def add_new_records(ipqs_data: dict, url:str):
     )
     db.session.add(domain_obj)
     db.session.flush()
+    db.session.commit()
 
     url_obj = URL(
-        domain_id=domain_obj,
-        ip_id=ip_address_obj,
+        domain_id=domain_obj.domain_id,
+        ip_id=ip_address_obj.ip_id,
         url=url,
         record_created_at = datetime.now(),
         last_scan = datetime.now(),
