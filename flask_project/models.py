@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 
 db = SQLAlchemy()
 
+# TODO: FIX USERS
 # class Role(db.Model):
 #     __tablename__ = "roles"
 
@@ -69,9 +70,9 @@ class URL(db.Model):
     url_id = db.Column(db.Integer, primary_key=True)
     domain_id = db.Column(db.Integer, db.ForeignKey("domains.domain_id"))
     ip_id = db.Column(db.Integer, db.ForeignKey("ip_address.ip_id"))
-    url = db.Column(db.String(64))
+    url = db.Column(db.String(64)) #TODO: URL field should have more allowed characters
     record_created_at = db.Column(db.DateTime, server_default=func.now())
     last_scan = db.Column(db.DateTime, server_default=func.now())
-    added_by = db.Column(db.Integer)#, db.ForeignKey("users.user_id"))
+    added_by = db.Column(db.Integer)#, db.ForeignKey("users.user_id")) #TODO
     search_counter = db.Column(db.Integer)
     safety_status = db.Column(db.String(64))
