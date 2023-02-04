@@ -19,8 +19,15 @@ def home_page():
 
 @app.post("/send_url")
 def send_url_to_IPQS():
+    """
+    Send a URL to the IPQS API for malicious content scanning.
+
+    Returns:
+        - json: Result of the scan in JSON format.
+    """
+
     url_to_check = request.json["url"]
-    ip_address = get_ip(url_to_check)
+    # ip_address = get_ip(url_to_check) #TODO - fix the ip_address
     domain = get_domain(url_to_check)
     # TODO: CHECK IF DOMAIN/URL/IP ALREADY EXISTS
     # Here put function which will check if domain/url/ip are actually in our database.

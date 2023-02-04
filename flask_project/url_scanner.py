@@ -2,7 +2,6 @@
 Url scanner module to work with urls/domains/ips.
 """
 import json
-import socket
 import urllib
 from urllib.parse import urlparse
 
@@ -19,6 +18,14 @@ class IPQS:
     key = Config.IPQS_SECRET_KEY  # API SECRET KEY
 
     def malicious_url_scanner_api(self, url: str, vars: dict = {}) -> dict:
+        """
+        Scan a url for malicious content with IPQS API.
+
+        Args:
+            - url(str): Url to scan
+            - vars(dict, optional): Additional parameters passed to API request.
+                                    By default it's empty.
+        """
         url = Config.IPQS_URL % (
             self.key,
             urllib.parse.quote_plus(url),
@@ -34,7 +41,7 @@ def get_domain(url: str) -> str:
     parsed_url = urlparse(url)
     return parsed_url.netloc
 
-
+#TODO: Create a new function for getting IP from url. socket.gethostbyname() doesn't works.
 def get_ip(url: str) -> str:
     """
     Input url, output ip of url.

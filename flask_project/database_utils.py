@@ -1,8 +1,17 @@
+"""
+database_utils.py
+
+This module stands for database management functions.
+Adding new records, retrieving all records etc.
+"""
 from datetime import datetime
 from .models import db, URL, IP_address, Domains
 
 
 def add_new_records(ipqs_data: dict, url: str):
+    """
+    After url scan, add new records in appropiate tables.
+    """
     ip_address_obj = IP_address(
         ip_address=ipqs_data["ip_address"],
         record_created_at=datetime.now(),
