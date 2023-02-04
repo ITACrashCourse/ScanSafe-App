@@ -1,5 +1,4 @@
 FROM python:3.10.4
-EXPOSE 5000
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -9,5 +8,6 @@ WORKDIR /flask_app
 
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
+EXPOSE 5000
 
 COPY . .
