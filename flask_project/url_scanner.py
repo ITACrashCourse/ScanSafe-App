@@ -34,6 +34,7 @@ def get_domain(url: str) -> str:
     parsed_url = urlparse(url)
     return parsed_url.netloc
 
+
 def get_ip(url: str) -> str:
     """
     Input url, output ip of url.

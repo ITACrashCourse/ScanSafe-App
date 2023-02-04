@@ -12,15 +12,14 @@ from .url_scanner import IPQS, get_domain, get_ip
 from .database_utils import add_new_records
 
 
-
-
 @app.route("/")
 def home_page():
     return render_template("base.html")
 
+
 @app.post("/send_url")
 def send_url_to_IPQS():
-    url_to_check = request.json['url']
+    url_to_check = request.json["url"]
     ip_address = get_ip(url_to_check)
     domain = get_domain(url_to_check)
     # TODO: CHECK IF DOMAIN/URL/IP ALREADY EXISTS
