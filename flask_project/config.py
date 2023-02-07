@@ -14,6 +14,14 @@ def get_ipqs_secret_key():
         )
     return ipqs_secret_key
 
+def get_database_uri():
+    sqlalchemy_database_uri = os.environ.get("DATABASE_URL")
+    if not sqlalchemy_database_uri:
+        raise Exception(
+            "No database connection!"
+        )
+    return sqlalchemy_database_uri
+
 
 class Config(object):
     DEBUG = False
@@ -25,7 +33,10 @@ class Config(object):
 
 
 class DevelopmentConfig(Config):
+    DEVELOPMENT = True
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = get_database_uri()
+
 
 
 class TestingConfig(Config):
