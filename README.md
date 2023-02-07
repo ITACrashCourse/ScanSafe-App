@@ -52,7 +52,6 @@ Open shell in flask_app container and run
 
 ```
 flask --app flask_project shell
-import db
 db.create_all()
 ```
 
