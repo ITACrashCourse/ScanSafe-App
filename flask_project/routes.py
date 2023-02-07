@@ -9,7 +9,7 @@ from flask import request
 from flask_project import app
 
 from .url_scanner import IPQS, get_domain, get_ip
-from .database_utils import add_new_records
+from .database_utils import create_ip_record, create_domain_record, create_url_record
 
 
 @app.route("/")
@@ -34,6 +34,8 @@ def send_url_to_IPQS():
     # If last scan of that record is less than for example 24h, provide results from database.
     # In other ways, send request to IPQS service.
     ipqs_response = IPQS().malicious_url_scanner_api(url_to_check)
-    add_new_records(ipqs_response, url_to_check)
+    ip_record = create_ip_record(ipqs_response)
+    domain_record = create_domain_record(ipqs_response)
+    url_record = create_url_record(url_to_check, domain_record, ip_record)
     print(ipqs_response)
     return jsonify(ipqs_response)

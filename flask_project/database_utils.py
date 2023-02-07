@@ -8,9 +8,12 @@ from datetime import datetime
 from .models import db, URL, IP_address, Domains
 
 
-def add_new_records(ipqs_data: dict, url: str):
+def create_ip_record(ipqs_data: dict):
     """
-    After url scan, add new records in appropiate tables.
+    Create an IP address record in the database.
+    Args:
+        - ipqs_data (dict): A dictionary containing data about ip address,
+        from IP Quality Score Service.
     """
     ip_address_obj = IP_address(
         ip_address=ipqs_data["ip_address"],
@@ -29,16 +32,35 @@ def add_new_records(ipqs_data: dict, url: str):
         dns_valid=ipqs_data["dns_valid"],
     )
     db.session.add(ip_address_obj)
-    db.session.flush()
+    db.session.commit()
+    return ip_address_obj
 
+
+def create_domain_record(ipqs_data: dict):
+    """
+    Create an domain record in the database.
+    Args:
+        - ipqs_data (dict): A dictionary containing data about ip address,
+        from IP Quality Score Service.
+    """
     domain_obj = Domains(
         domain_name=ipqs_data["domain"],
         record_created_at=datetime.now(),
         record_updated_at=datetime.now(),
     )
     db.session.add(domain_obj)
-    db.session.flush()
+    db.session.commit()
+    return domain_obj
 
+
+def create_url_record(url: str, domain_obj, ip_address_obj):
+    """
+    Create an url record in the database.
+    Args:
+        - url (str): Just url.
+        - domain_obj (): Related to URL domain record from DB.
+        - ip_addres_obj (): Related to URL IP address record from DB.
+    """
     url_obj = URL(
         domain_id=domain_obj.domain_id,
         ip_id=ip_address_obj.ip_id,
@@ -51,3 +73,4 @@ def add_new_records(ipqs_data: dict, url: str):
     )
     db.session.add(url_obj)
     db.session.commit()
+    return url_obj
