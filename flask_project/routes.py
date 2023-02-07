@@ -27,8 +27,10 @@ def send_url_to_IPQS():
     """
 
     url_to_check = request.json["url"]
-    # ip_address = get_ip(url_to_check) #TODO - fix the ip_address
     domain = get_domain(url_to_check)
+    print(domain)
+    ip_address = get_ip(domain) #TODO - fix the ip_address
+    print(ip_address)
     # TODO: CHECK IF DOMAIN/URL/IP ALREADY EXISTS
     # Here put function which will check if domain/url/ip are actually in our database.
     # If last scan of that record is less than for example 24h, provide results from database.
