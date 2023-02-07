@@ -5,6 +5,7 @@ This module contains all the routes and view functions for the Flask app.
 from flask import render_template
 from flask import jsonify
 from flask import request
+import validators
 
 from flask_project import app
 
@@ -25,8 +26,10 @@ def send_url_to_IPQS():
     Returns:
         - json: Result of the scan in JSON format.
     """
-
     url_to_check = request.json["url"]
+    if not validators.url(url_to_check):
+        return jsonify({'error': 'No or wrong URL provided.'}), 400
+    
     domain = get_domain(url_to_check)
     print(domain)
     ip_address = get_ip(domain) #TODO - fix the ip_address
@@ -40,4 +43,4 @@ def send_url_to_IPQS():
     domain_record = create_domain_record(ipqs_response)
     url_record = create_url_record(url_to_check, domain_record, ip_record)
     print(ipqs_response)
-    return jsonify(ipqs_response)
+    return jsonify(ipqs_response), 200
