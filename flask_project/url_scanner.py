@@ -8,7 +8,7 @@ import re
 from urllib.parse import urlparse
 
 from .config import Config
-from .database_utils import get_url_scan_info
+from .database_utils import get_url_scan_info, get_domain_scan_info
 
 
 class IPQS:
@@ -76,3 +76,23 @@ def url_scan_info_check(url_list):
         else:
             scan_info.append([url,"Wrong input - given string is not URL address"])
     return (scan_info)
+
+def url_domains_scan_info_check(url_domains_list):
+    """
+    Function return scan info for given URL or domains names
+
+    :Parameters:
+        - url_domains_list (list): List with URL or domains names
+    :Return:
+        - scan_info (list): List with scan info for each given URL or domains names
+    """
+    scan_info = []
+    for url in url_domains_list:
+        if url_validation(url) is True:
+            scan_info.append( get_url_scan_info(url))
+        elif domain_validation(url) is True:
+            scan_info.append(get_domain_scan_info(url))
+        else:
+            scan_info.append([url,"Wrong input - given string is not URL or domain address"])    
+
+    return scan_info
