@@ -17,8 +17,8 @@ def home_page():
 @app.route("/url_scan_info", methods = ["POST"])
 def url_scan_info():
     """
-    Funfction gets URLs and return scan info from database
-    
+    Funfction gets URLs names and return scan info from database
+
     Example of correct input json with URLs: 
         - {"1":"https://onet.pl", "2":"https://wp.pl"}
     :Return:
