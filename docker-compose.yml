@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  flask_app:
+    build: .
+    command: flask --app flask_project --debug run -h 0.0.0.0 -p 5000 # TODO: check 127.0.0.1
+    ports:
+      - 5000:5000
+    volumes:
+      - type: bind
+        source: ./flask_project
+        target: /flask_app/flask_project
+    depends_on:
+      - postgresql_container  
+  postgresql_container:
+    image: postgres
+    container_name: ${DB_CONTAINER_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:5432
+   
+volumes:
+  db_data:
