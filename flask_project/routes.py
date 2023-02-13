@@ -6,14 +6,16 @@ from flask_project.url_scanner import IPQS, get_domain, extract_urls
 def home_page():
     return render_template('base.html')
 
-# Scan text urls via IP Quality Score service.
 @app.route("/scan-text-urls", methods=["POST"])
 def scan_text_urls():
-    body = request.json
-    text = body["text"]
+    """
+    this endpoint extracts all URLs from the text and performs a malicious URL scan on each URL using IPQS(). 
+    The results of the scan are returned as a list of dictionaries.
+    """
+    text = request.json["text"]
     urls = extract_urls(text)
     result = []
     for url in urls:
-        domain = get_domain(url)
-        result.append(IPQS().malicious_url_scanner_api(domain))
+        result.append(IPQS().malicious_url_scanner_api(url))
     return result
+    

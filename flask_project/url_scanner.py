@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from .config import Config
 
+url_regex_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
 
 class IPQS:
     """
@@ -34,5 +35,4 @@ def get_domain(url: str) -> str:
     return parsed_url.netloc
 
 def extract_urls(text):
-    url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
-    return re.findall(url_extract_pattern, text)
+    return re.findall(url_regex_pattern, text)
