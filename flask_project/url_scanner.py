@@ -7,7 +7,7 @@ import urllib
 import re
 from urllib.parse import urlparse
 
-from .config import Config
+from .config import Config, RegularExpression
 from .database_utils import get_url_scan_info, get_domain_scan_info
 
 
@@ -55,9 +55,7 @@ def domain_validation(domain):
     :Return:
         - True/False
     """
-    regex = re.compile(
-        r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$'
-    )
+    regex = RegularExpression.REGEX_DOMAIN
     return True if regex.match(domain) else False
 
 def url_scan_info_check(url_list):
@@ -71,11 +69,11 @@ def url_scan_info_check(url_list):
     """
     scan_info = []
     for url in url_list:
-        if url_validation(url) is True:
+        if url_validation(url):
             scan_info.append( get_url_scan_info(url))
         else:
             scan_info.append([url,"Wrong input - given string is not URL address"])
-    return (scan_info)
+    return scan_info
 
 def url_domains_scan_info_check(url_domains_list):
     """
@@ -88,9 +86,9 @@ def url_domains_scan_info_check(url_domains_list):
     """
     scan_info = []
     for url in url_domains_list:
-        if url_validation(url) is True:
+        if url_validation(url):
             scan_info.append( get_url_scan_info(url))
-        elif domain_validation(url) is True:
+        elif domain_validation(url):
             scan_info.append(get_domain_scan_info(url))
         else:
             scan_info.append([url,"Wrong input - given string is not URL or domain address"])    

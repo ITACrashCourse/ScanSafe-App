@@ -8,7 +8,8 @@ from .models import db
 import json
 from flask import render_template
 
-from .database_utils import url_scan_info_check, url_domains_scan_info_check
+# from .database_utils import url_scan_info_check, url_domains_scan_info_check
+from .url_scanner import url_scan_info_check, url_domains_scan_info_check
 
 @app.route('/')
 def home_page():

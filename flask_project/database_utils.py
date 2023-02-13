@@ -27,10 +27,10 @@ def get_url_scan_info(url_to_check):
                 .join(URL, IP_address.ip_id == URL.ip_id)
                 .filter(URL.url == url_to_check)
                 .all())
-    if url_result == []:
-        url_scan_info = [url_to_check,"URL is missing in database."]
-    else:
+    if url_result:
         url_scan_info = [r._asdict() for r in url_result]
+    else:
+        url_scan_info = [url_to_check,"URL is missing in database."]
     return url_scan_info
 
 def get_domain_scan_info (domain_to_check):
@@ -54,8 +54,8 @@ def get_domain_scan_info (domain_to_check):
                 .join(Domains, URL.domain_id == Domains.domain_id)
                 .filter(Domains.domain_name == domain_to_check)
                 .all())
-    if domain_result == []:
-        domain_scan_info = [domain_to_check,"Domain is missing in database."]
-    else:
+    if domain_result:
         domain_scan_info = [r._asdict() for r in domain_result]
+    else:
+        domain_scan_info = [domain_to_check,"Domain is missing in database."]
     return domain_scan_info

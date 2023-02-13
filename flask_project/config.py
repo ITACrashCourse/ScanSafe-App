@@ -1,5 +1,6 @@
 """config.py - """
 import os
+import re
 
 from dotenv import load_dotenv
 
@@ -38,6 +39,13 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = get_database_uri()
 
 
-
 class TestingConfig(Config):
     TESTING = True
+
+
+class RegularExpression(Config):
+    """
+    Regular expression patterns
+    """
+    REGEX_DOMAIN = re.compile(
+        r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$')
