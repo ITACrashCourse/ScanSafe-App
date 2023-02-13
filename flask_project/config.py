@@ -28,7 +28,7 @@ def get_database_uri():
     """
     sqlalchemy_database_uri = os.environ.get("DATABASE_URL")
     if not sqlalchemy_database_uri:
-        raise Exception("No database connection!")
+        raise Exception("No database configuration found!")
     return sqlalchemy_database_uri
 
 

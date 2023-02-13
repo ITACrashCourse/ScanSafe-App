@@ -17,10 +17,11 @@ def create_ip_record(ipqs_data: dict):
         - ipqs_data (dict): A dictionary containing data about ip address,
         from IP Quality Score Service.
     """
+    current_datetime = datetime.now()
     ip_address_obj = IP_address(
         ip_address=ipqs_data["ip_address"],
-        record_created_at=datetime.now(),
-        record_updated_at=datetime.now(),
+        record_created_at=current_datetime,
+        record_updated_at=current_datetime,
         server=ipqs_data["server"],
         category=ipqs_data["category"],
         unsafe=ipqs_data["unsafe"],
@@ -115,12 +116,13 @@ def create_url_record(url: str, domain_obj, ip_address_obj):
         - domain_obj (): Related to URL domain record from DB.
         - ip_addres_obj (): Related to URL IP address record from DB.
     """
+    current_datetime = datetime.now()
     url_obj = URL(
         domain_id=domain_obj.domain_id,
         ip_id=ip_address_obj.ip_id,
         url=url,
-        record_created_at=datetime.now(),
-        last_scan=datetime.now(),
+        record_created_at=current_datetime,
+        last_scan=current_datetime,
         added_by=1,  # TODO
         search_counter=1,
         safety_status=calculate_safety_status(ip_address_obj),
