@@ -1,5 +1,6 @@
 """config.py - """
 import os
+import re
 
 from dotenv import load_dotenv
 
@@ -67,3 +68,11 @@ class TestingConfig(Config):
     Testing environment configuration for Flask app.
     """
     TESTING = True
+
+
+class RegularExpression(Config):
+    """
+    Regular expression patterns
+    """
+    REGEX_DOMAIN = re.compile(
+        r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$')
