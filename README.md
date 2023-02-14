@@ -34,6 +34,7 @@ docker-compose up -d
 
 Visit 127.0.0.1:5000 in your browser.
 
+
 # .ENV
 
 ```bash
@@ -54,4 +55,5 @@ Open shell in flask_app container and run
 flask --app flask_project shell
 db.create_all()
 ```
+
 

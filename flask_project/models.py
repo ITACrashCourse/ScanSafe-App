@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 
 db = SQLAlchemy()
 
-# TODO: Add users and roles.
+
 
 
 class IP_address(db.Model):
@@ -26,6 +26,7 @@ class IP_address(db.Model):
     dns_server = db.Column(db.Boolean)
     dns_valid = db.Column(db.Boolean)
     urls = db.relationship("URL", backref="ip_address")
+
 
 
 class Domains(db.Model):
@@ -50,5 +51,6 @@ class URL(db.Model):
     record_created_at = db.Column(db.DateTime, server_default=func.now())
     last_scan = db.Column(db.DateTime, server_default=func.now())
     added_by = db.Column(db.Integer)  # TODO
+
     search_counter = db.Column(db.Integer)
     safety_status = db.Column(db.String(64))

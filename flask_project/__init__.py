@@ -18,4 +18,5 @@ app.config.from_object(DevelopmentConfig)
 db.init_app(app)
 
 
+
 from flask_project import routes, models
