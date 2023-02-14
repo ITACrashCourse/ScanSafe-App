@@ -34,3 +34,26 @@ docker-compose up -d
 
 Visit 127.0.0.1:5000 in your browser.
 
+
+# .ENV
+
+```bash
+IPQS_SECRET_KEY='yours_ipqs_secret_key'
+DB_CONTAINER_NAME=''
+POSTGRES_USER=''
+POSTGRES_PASSWORD=''
+POSTGRES_DB=''
+POSTGRES_PORT=''
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql_container:5432/${POSTGRES_DB}"
+```
+
+# Database initialization
+
+Open shell in flask_app container and run
+
+```
+flask --app flask_project shell
+db.create_all()
+```
+
+
