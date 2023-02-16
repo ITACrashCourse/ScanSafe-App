@@ -25,6 +25,7 @@ from .database_utils import (
     update_domain_record,
     update_ip_record,
     update_url_record,
+    get_urls_domains,
 )
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -33,7 +34,17 @@ log = logging.getLogger("flask_app")
 
 @app.route("/")
 def home_page():
-    return render_template("base.html")
+    return render_template('base.html')
+
+
+@app.get('/search')
+def domains_urls_query():
+    """
+    Perform a search for domains and urls associated with IP address that match a threat type.
+    """
+    threat_type = request.args.get('threat_type')
+    return jsonify(get_urls_domains(threat_type))
+
 
 
 @app.post("/send_url")
