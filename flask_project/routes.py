@@ -5,9 +5,9 @@ This module contains all the routes and view functions for the Flask app.
 import sys
 import logging
 import json
-from flask import render_template
-from flask import jsonify
-from flask import request
+from flask_project import app
+from flask_project.url_scanner import IPQS, get_domain, extract_urls
+from flask import render_template, request, jsonify
 import validators
 
 from flask_project import app
@@ -36,6 +36,21 @@ log = logging.getLogger("flask_app")
 def home_page():
     return render_template('base.html')
 
+@app.route("/scan-text-urls", methods=["POST"])
+def scan_text_urls():
+    """
+    This endpoint extracts all URLs from the text and performs a malicious URL scan on each URL using IPQS(). 
+    The results of the scan are returned as a list of dictionaries.
+    """
+    text = request.json.get("text")
+    if not text:
+        return jsonify({"error": "Expecting 'text' in request body"}), 400
+    urls = extract_urls(text)
+    result = []
+    for url in urls:
+        result.append(IPQS().malicious_url_scanner_api(url))
+    return result
+    
 
 @app.get('/search')
 def domains_urls_query():
@@ -55,7 +70,7 @@ def send_url_to_IPQS():
     Returns:
         - json: Result of the scan in JSON format.
     """
-    url_to_check = request.json["url"]
+    url_to_check = request.json.get("url")
     if not validators.url(url_to_check):
         return jsonify({"error": "No or wrong URL provided."}), 400
     domain = get_domain(url_to_check)
