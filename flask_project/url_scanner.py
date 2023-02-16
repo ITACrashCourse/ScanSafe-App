@@ -13,7 +13,7 @@ import re
 from .config import Config, RegularExpression
 from .database_utils import get_url_scan_info, get_domain_scan_info
 
-url_regex_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+URL_REGEX_PATTERN = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
 
 class IPQS:
     """
@@ -47,7 +47,7 @@ def get_domain(url: str) -> str:
     return parsed_url.netloc
 
 def extract_urls(text):
-    return re.findall(url_regex_pattern, text)
+    return re.findall(URL_REGEX_PATTERN, text)
 
 def get_ip(domain: str) -> str:
     """

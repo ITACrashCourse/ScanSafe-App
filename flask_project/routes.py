@@ -39,10 +39,12 @@ def home_page():
 @app.route("/scan-text-urls", methods=["POST"])
 def scan_text_urls():
     """
-    this endpoint extracts all URLs from the text and performs a malicious URL scan on each URL using IPQS(). 
+    This endpoint extracts all URLs from the text and performs a malicious URL scan on each URL using IPQS(). 
     The results of the scan are returned as a list of dictionaries.
     """
-    text = request.json["text"]
+    text = request.json.get("text")
+    if not text:
+        return jsonify({"error": "Expecting 'text' in request body"}), 400
     urls = extract_urls(text)
     result = []
     for url in urls:
@@ -68,7 +70,7 @@ def send_url_to_IPQS():
     Returns:
         - json: Result of the scan in JSON format.
     """
-    url_to_check = request.json["url"]
+    url_to_check = request.json.get("url")
     if not validators.url(url_to_check):
         return jsonify({"error": "No or wrong URL provided."}), 400
     domain = get_domain(url_to_check)
