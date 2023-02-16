@@ -33,7 +33,7 @@ class Domains(db.Model):
     __tablename__ = "domains"
 
     domain_id = db.Column(db.Integer, primary_key=True)
-    domain_name = db.Column(db.String(64), nullable=False)
+    domain_name = db.Column(db.String(250), nullable=False)
     record_created_at = db.Column(db.DateTime, server_default=func.now())
     record_updated_at = db.Column(db.DateTime, onupdate=func.now())
     urls = db.relationship("URL", backref="domain")
