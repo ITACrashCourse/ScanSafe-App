@@ -3,6 +3,7 @@ import os
 import re
 
 from dotenv import load_dotenv
+from .models import db
 
 load_dotenv()
 
@@ -60,7 +61,10 @@ class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = get_database_uri()
-
+    SESSION_TYPE = 'sqlalchemy'
+    SESSION_SQLALCHEMY = db
+    # needs to be loaded from .env
+    SECRET_KEY = 'secret_key'
 
 #TODO
 class TestingConfig(Config):

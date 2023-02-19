@@ -5,12 +5,13 @@ This module contains all the routes and view functions for the Flask app.
 import sys
 import logging
 import json
+import hashlib
+from flask_session import Session
 from flask_project import app
-from flask_project.url_scanner import IPQS, get_domain, extract_urls
-from flask import render_template, request, jsonify
-import validators
 
-from flask_project import app
+from flask_project.url_scanner import IPQS, get_domain, extract_urls
+from flask import render_template, request, jsonify, session, redirect, url_for
+import validators
 
 from .url_scanner import (IPQS, get_domain, get_ip, 
                           url_scan_info_check, url_domains_scan_info_check)
@@ -28,13 +29,20 @@ from .database_utils import (
     get_urls_domains,
 )
 
+#### to improve later ########
+from flask_sqlalchemy import SQLAlchemy
+from .models import db, Users
+##############################
+
+
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 log = logging.getLogger("flask_app")
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def home_page():
-    return render_template('base.html')
+    return render_template('home.html')
+
 
 @app.route("/scan-text-urls", methods=["POST"])
 def scan_text_urls():
@@ -59,7 +67,6 @@ def domains_urls_query():
     """
     threat_type = request.args.get('threat_type')
     return jsonify(get_urls_domains(threat_type))
-
 
 
 @app.post("/send_url")
@@ -138,3 +145,51 @@ def url_domains_scan_info():
     url_domains_list = list(url_domains_input.values())
     url_domains_scan_result = url_domains_scan_info_check(url_domains_list)
     return json.dumps(url_domains_scan_result)
+
+######################################
+####  Login functions in progress ####
+######################################
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = hashlib.md5(request.form['password'].encode()).hexdigest()
+        user = Users(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = hashlib.md5(request.form['password'].encode()).hexdigest()
+        user = Users.query.filter_by(username=username, password=password).first()
+        if user:
+            session['username'] = username
+            return render_template('main.html')
+        else:
+            return redirect(url_for('login'))
+    return render_template('login.html')
+    
+
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    if session.get('username'):
+        session.pop('username', None)
+    return redirect(url_for('login'))
+
+
+@app.route("/main", methods=["GET", "POST"])
+def main():
+    if session.get('username'):
+        return render_template('main.html')
+    else:
+        return redirect(url_for('login'))
+
+######################################
+####                              ####
+######################################
