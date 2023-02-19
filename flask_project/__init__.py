@@ -10,13 +10,18 @@ Components:
     - models: database models.
 """
 from flask import Flask
+from flask_smorest import Api
 from .config import DevelopmentConfig
 from .models import db
+from .routes import blp
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db.init_app(app)
+with app.app_context():
+    db.create_all()
 
-
+api=Api(app)
+api.register_blueprint(blp)
 
 from flask_project import routes, models

@@ -5,12 +5,10 @@ This module contains all the routes and view functions for the Flask app.
 import sys
 import logging
 import json
-from flask_project import app
+from flask_smorest import Blueprint
 from flask_project.url_scanner import IPQS, get_domain, extract_urls
 from flask import render_template, request, jsonify
 import validators
-
-from flask_project import app
 
 from .url_scanner import (IPQS, get_domain, get_ip, 
                           url_scan_info_check, url_domains_scan_info_check)
@@ -31,12 +29,27 @@ from .database_utils import (
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 log = logging.getLogger("flask_app")
 
+blp=Blueprint("ScanSafe endpoints:","Swagger-ui")
 
-@app.route("/")
+@blp.route("/")
+@blp.doc(
+                summary='Opening home page',
+                description='Endpoint to open home.html page.',
+                tags=['Home page'],
+                parameters = [],
+                response= []
+            )
 def home_page():
     return render_template('base.html')
 
-@app.route("/scan-text-urls", methods=["POST"])
+@blp.route("/scan-text-urls", methods=["POST"])
+@blp.doc(
+                summary='This endpoint extracts all URLs from the text',
+                description='This endpoint extracts all URLs from the text.',
+                tags=['Scanning text'],
+                parameters = [],
+                response= []
+        )
 def scan_text_urls():
     """
     This endpoint extracts all URLs from the text and performs a malicious URL scan on each URL using IPQS(). 
@@ -52,7 +65,14 @@ def scan_text_urls():
     return result
     
 
-@app.get('/search')
+@blp.get('/search')
+@blp.doc(
+                summary='Perform a search for domains and urls',
+                description='Perform a search for domains and urls.',
+                tags=['Search'],
+                parameters = [],
+                response= []
+        )
 def domains_urls_query():
     """
     Perform a search for domains and urls associated with IP address that match a threat type.
@@ -61,8 +81,50 @@ def domains_urls_query():
     return jsonify(get_urls_domains(threat_type))
 
 
-
-@app.post("/send_url")
+@blp.post("/send_url")
+@blp.doc(
+                summary='Sending URL to IP Quality Score  ',
+                description='Function send given by user URL adress to IPQS for check safety parameters',
+                tags=['Sending URL'],
+                requestBody={
+                    'description': 'JSON object containing ULR adress for check',
+                    'required': True,
+                    'content': {
+                        'application/json': {
+                            'schema': {}, 
+                            'example':{
+                                        "url":"https://regex101.com/library"
+                                      }
+                        }
+                    }
+                },
+                responses={
+                    200: {
+                        'description': 'JSON object containing ULR information from IP Quality Score sevice.',
+                        'content': {
+                            'application/json': {
+                                'schema': {},
+                                'example':{
+                                            "domain": "regex101.com",
+                                            "ip": "78.47.220.195",
+                                            "safety_status": "Low risk",
+                                            "url": "https://regex101.com/library"
+                                           }
+                            }
+                        }
+                    },
+                    'default': {
+                        'description': 'Retrival data from IPQS failed.',
+                        'content': {
+                            'application/json': {
+                                'schema': {},
+                                'example':{None:None}
+                            }
+                        }
+                        
+                    }
+                }
+            )
 def send_url_to_IPQS():
     """
     Send a URL to the IPQS API for malicious content scanning.
@@ -108,7 +170,58 @@ def send_url_to_IPQS():
     return jsonify(gather_url_informations(url_record)), 200
 
 
-@app.route("/url_scan_info", methods = ["POST"])
+@blp.route("/url_scan_info", methods = ["POST"])
+@blp.doc(
+                summary='Receiving scan info for URL/URLs from database',
+                description='Function has to get single URL/domain or many number of addresses',
+                tags=['Getting scan info'],
+                requestBody={
+                    'description': 'JSON object containing ULRs addresses.',
+                    'required': True,
+                    'content': {
+                        'application/json': {
+                            'schema': {}, 
+                            'example':{
+                                        "1":"https://regex101.com/"
+                                      }
+                        }
+                    }
+                },
+                responses={
+                    200: {
+                        'description': 'Scan info for received ULR information retrieved successfully.',
+                        'content': {
+                            'application/json': {
+                                'schema': {},
+                                'example':{
+                                            "url": "https://regex101.com/",
+                                            "category": "Computers & internet",
+                                            "server": "",
+                                            "unsafe": 'false',
+                                            "risk_score": 0,
+                                            "suspicious": 'false',
+                                            "malware": 'false',
+                                            "phising": 'false',
+                                            "spamming": 'false',
+                                            "parking": 'false',
+                                            "dns_server": 'false',
+                                            "dns_valid": 'true'
+                                           }
+                            }
+                        }
+                    },
+                    'default': {
+                        'description': 'Scan info retrival failed.',
+                        'content': {
+                            'application/json': {
+                                'schema': {},
+                                'example':{None:None}
+                            }
+                        }
+                        
+                    }
+                }
+            )
 def url_scan_info():
     """
     Funfction gets URLs names and return scan info from database
@@ -124,7 +237,58 @@ def url_scan_info():
     return json.dumps(url_scan_result)
 
 
-@app.route("/url_domains_scan_info", methods = ["POST"])
+@blp.route("/url_domains_scan_info", methods = ["POST"])
+@blp.doc(
+                summary='Receiving scan info for URLs/domains from database',
+                description='Function has to get single URL/domain or many number of addresses',
+                tags=['Getting scan info'],
+                requestBody={
+                    'description': 'JSON object containing ULRs or domains addresses.',
+                    'required': True,
+                    'content': {
+                        'application/json': {
+                            'schema': {}, 
+                            'example':{
+                                        "1":"regex101.com"
+                                      }
+                        }
+                    }
+                },
+                responses={
+                    200: {
+                        'description': 'Scan info for received ULRs or domain information retrieved successfully.',
+                        'content': {
+                            'application/json': {
+                                'schema': {},
+                                'example':{
+                                            "url": "regex101.com",
+                                            "category": "Computers & internet",
+                                            "server": "",
+                                            "unsafe": 'false',
+                                            "risk_score": 0,
+                                            "suspicious": 'false',
+                                            "malware": 'false',
+                                            "phising": 'false',
+                                            "spamming": 'false',
+                                            "parking": 'false',
+                                            "dns_server": 'false',
+                                            "dns_valid": 'true'
+                                           }
+                            }
+                        }
+                    },
+                    'default': {
+                        'description': 'Scan info retrival failed.',
+                        'content': {
+                            'application/json': {
+                                'schema': {},
+                                'example':{None:None}
+                            }
+                        }
+                        
+                    }
+                }
+            )
 def url_domains_scan_info():
     """
     Funfction gets URL or domains names and return scan info from database
@@ -138,3 +302,4 @@ def url_domains_scan_info():
     url_domains_list = list(url_domains_input.values())
     url_domains_scan_result = url_domains_scan_info_check(url_domains_list)
     return json.dumps(url_domains_scan_result)
+
