@@ -80,3 +80,12 @@ class RegularExpression(Config):
     """
     REGEX_DOMAIN = re.compile(
         r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$')
+    
+    REGEX_USER = re.compile(
+        r'^\S{8,}$')
+    
+    REGEX_PASS = re.compile(
+        r'^\S{8,}$')
+    
+    REGEX_EMAIL = re.compile(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')

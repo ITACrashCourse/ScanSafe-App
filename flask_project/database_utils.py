@@ -3,9 +3,10 @@ database_utils.py
 This module stands for database management functions.
 Adding new records, retrieving all records etc.
 """
+import hashlib
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
-from .models import db, URL, IP_address, Domains
+from .models import db, URL, IP_address, Domains, Users
 
 
 
@@ -212,6 +213,7 @@ def get_url_scan_info(url_to_check):
         url_scan_info = [url_to_check,"URL is missing in database."]
     return url_scan_info
 
+
 def get_domain_scan_info (domain_to_check):
     """
     Function check scan info in database for given domain name
@@ -238,6 +240,7 @@ def get_domain_scan_info (domain_to_check):
     else:
         domain_scan_info = [domain_to_check,"Domain is missing in database."]
     return domain_scan_info
+
 
 def get_urls_domains(threat_type: str):
     """
@@ -275,3 +278,71 @@ def get_urls_domains(threat_type: str):
     ]
 
     return {"urls": urls, "domains": domains}
+
+
+def create_user (username, password, email):
+    """
+    Add new user to database
+
+    :Parameters:
+        - username (string)
+        - password (string)
+        - email (string)
+    :Return:
+        - no return
+    """
+    password = hashlib.md5(password.encode()).hexdigest()
+    user = Users(username=username, password=password, email=email)
+    db.session.add(user)
+    db.session.commit()
+
+
+def if_user_not_registered (username):
+    """
+    Function check if given user is already registered
+
+    :Parameters:
+        - username (string)
+    :Return:
+        - True/False
+    """
+    user_result = (db.session.query(Users.username)
+                .filter(Users.username == username)
+                .all())
+    if user_result:
+        return False
+    else:
+        return True
+
+
+def if_email_not_registered(email):
+    """
+    Function check if given email is already registered
+
+    :Parameters:
+        - email (string)
+    :Return:
+        - True/False
+    """
+    email_result = (db.session.query(Users.email)
+                .filter(Users.email == email)
+                .all())
+    if email_result:
+        return False
+    else:
+        return True
+
+
+def check_credentials(username, password):
+    """
+    Function check if given credentials exist in database
+
+    :Parameters:
+        - username (string)
+        - email (string)
+    :Return:
+        - log_user 
+    """
+    password = hashlib.md5(password.encode()).hexdigest()
+    log_user = Users.query.filter_by(username=username, password=password).first()
+    return log_user

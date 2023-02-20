@@ -16,6 +16,7 @@ import validators
 from .url_scanner import (IPQS, get_domain, get_ip, 
                           url_scan_info_check, url_domains_scan_info_check)
 from .models import IP_address, URL, Domains
+from .login_users import register_user
 from .database_utils import (
     create_ip_record,
     create_domain_record,
@@ -27,13 +28,8 @@ from .database_utils import (
     update_ip_record,
     update_url_record,
     get_urls_domains,
+    check_credentials
 )
-
-#### to improve later ########
-from flask_sqlalchemy import SQLAlchemy
-from .models import db, Users
-##############################
-
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 log = logging.getLogger("flask_app")
@@ -146,19 +142,16 @@ def url_domains_scan_info():
     url_domains_scan_result = url_domains_scan_info_check(url_domains_list)
     return json.dumps(url_domains_scan_result)
 
-######################################
-####  Login functions in progress ####
-######################################
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        password = hashlib.md5(request.form['password'].encode()).hexdigest()
-        user = Users(username=username, password=password)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('login'))
+        password = request.form['password']
+        email = request.form['email']
+        registration = register_user(username,password,email)
+        if registration:
+            return redirect(url_for('login'))
     return render_template('register.html')
 
 
@@ -166,11 +159,11 @@ def register():
 def login():
     if request.method == 'POST':
         username = request.form['username']
-        password = hashlib.md5(request.form['password'].encode()).hexdigest()
-        user = Users.query.filter_by(username=username, password=password).first()
-        if user:
+        password = request.form['password']
+        log_user = check_credentials(username, password)
+        if log_user:
             session['username'] = username
-            return render_template('main.html')
+            return redirect(url_for('main'))
         else:
             return redirect(url_for('login'))
     return render_template('login.html')
@@ -189,7 +182,3 @@ def main():
         return render_template('main.html')
     else:
         return redirect(url_for('login'))
-
-######################################
-####                              ####
-######################################

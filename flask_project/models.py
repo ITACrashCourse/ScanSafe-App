@@ -5,8 +5,6 @@ from sqlalchemy.sql import func
 db = SQLAlchemy()
 
 
-
-
 class IP_address(db.Model):
     __tablename__ = "ip_address"
 
@@ -55,9 +53,12 @@ class URL(db.Model):
     search_counter = db.Column(db.Integer)
     safety_status = db.Column(db.String(64))
 
+
 class Users(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, server_default=func.now())
