@@ -16,7 +16,7 @@ def create_ip_record(ipqs_data: dict):
         - ipqs_data (dict): A dictionary containing data about ip address,
         from IP Quality Score Service.
     """
-    current_datetime = datetime.now()
+    current_datetime = datetime.utcnow()
     ip_address_obj = IP_address(
         ip_address=ipqs_data["ip_address"],
         record_created_at=current_datetime,
@@ -43,7 +43,7 @@ def update_ip_record(ip_record, ipqs_data: dict):
     Update IP record data based on ipqs response.
     """
     ip_record.ip_address = ipqs_data["ip_address"]
-    ip_record.record_updated_at = datetime.now()
+    ip_record.record_updated_at = datetime.utcnow()
     ip_record.server = ipqs_data["server"]
     ip_record.category = ipqs_data["category"]
     ip_record.unsafe = ipqs_data["unsafe"]
@@ -64,10 +64,11 @@ def create_domain_record(domain_name: str):
         - ipqs_data (dict): A dictionary containing data about ip address,
         from IP Quality Score Service.
     """
+    current_datetime=datetime.utcnow()
     domain_obj = Domains(
         domain_name=domain_name,
-        record_created_at=datetime.now(),
-        record_updated_at=datetime.now(),
+        record_created_at=current_datetime,
+        record_updated_at=current_datetime,
     )
     db.session.add(domain_obj)
     db.session.commit()
@@ -80,7 +81,7 @@ def update_domain_record(domain_record):
     Args:
         - domain_record ()
     """
-    domain_record.record_updated_at = datetime.now()
+    domain_record.record_updated_at = datetime.utcnow()
     db.session.commit()
 
 
@@ -115,7 +116,7 @@ def create_url_record(url: str, domain_obj, ip_address_obj):
         - domain_obj (): Related to URL domain record from DB.
         - ip_addres_obj (): Related to URL IP address record from DB.
     """
-    current_datetime = datetime.now()
+    current_datetime = datetime.utcnow()
     url_obj = URL(
         domain_id=domain_obj.domain_id,
         ip_id=ip_address_obj.ip_id,
@@ -138,7 +139,7 @@ def update_url_record(url_record, ip_addres_obj):
         - url_record (): Url record
         - ip_addres_obj (): IP record
     """
-    url_record.last_scan = datetime.now()
+    url_record.last_scan = datetime.utcnow()
     url_record.search_counter = url_record.search_counter + 1
     url_record.safety_status = calculate_safety_status(ip_addres_obj)
     db.session.commit()
@@ -151,7 +152,7 @@ def check_last_scan(url_record):
         - url_record (): url record obj
     """
     last_scan = url_record.last_scan
-    current_time = datetime.now()
+    current_time = datetime.utcnow()
     time_since_last_scan = current_time - last_scan
     return time_since_last_scan > timedelta(hours=24)
 
@@ -275,3 +276,13 @@ def get_urls_domains(threat_type: str):
     ]
 
     return {"urls": urls, "domains": domains}
+
+
+def delete_urls_where_last_scan_older_than_3_weeks():
+    """
+    Delete all URL records where last scan is older than 3 weeks.
+    """
+    current_time = datetime.utcnow()
+    three_weeks_ago = current_time - timedelta(weeks=1)
+    URL.query.filter(URL.last_scan < three_weeks_ago).delete(synchronize_session=False)
+    db.session.commit()
