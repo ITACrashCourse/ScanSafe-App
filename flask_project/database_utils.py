@@ -98,11 +98,11 @@ def calculate_safety_status(ip_address_obj):
     score = int(ip_address_obj.risk_score)
     malware = ip_address_obj.malware
     phising = ip_address_obj.phising
-    if score < 75:
+    if score < Config.LOW_RISK_LIMIT:
         return "Low risk"
-    elif score >= 75 and score < 85:
+    elif score < Config.SUSPICIOUS_LIMIT:
         return "Suspicious"
-    elif score >= 85 and score < 100:
+    elif score < Config.HIGH_RISK_LIMIT:
         return "High risk"
     elif score == 100 and malware or phising:
         return "Confirmed - Malware/Phising"
