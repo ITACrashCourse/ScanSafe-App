@@ -52,6 +52,10 @@ class Config(object):
     HOSTNAME = os.environ.get("HOSTNAME", "localhost")
     PORT = os.environ.get("PORT", "5000")
     HOURS = 24 # MUST BE INT
+    LOW_RISK_LIMIT = 75
+    SUSPICIOUS_LIMIT = 85
+    HIGH_RISK_LIMIT = 100
+    
 
 
 class DevelopmentConfig(Config):
