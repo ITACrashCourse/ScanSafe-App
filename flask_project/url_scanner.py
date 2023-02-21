@@ -141,21 +141,20 @@ def get_subdomains_and_subdirectories(url):
     reqs = requests.get(url)
     soup = BeautifulSoup(reqs.text, 'html.parser')
     
-    finals = []
+    finals = {}
 
     for link in soup.find_all('a'):
         href = link.get('href')
 
         if href != None and href[0] != '#' and len(href) > 1:
             if domainName in href:     # all full links to subdirectories
-                    finals.append(href) 
+                    finals.add(href) 
             elif name in href:         # subdomains of our domain
-                    finals.append(href)
-            
+                    finals.add(href) 
             else:
                 parsed_urii = urllib.request.urlparse(href)
                 Name = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_urii)
                 if Name == ':///':     # relative links to subdirectories
-                    finals.append(domainName + href)
-    return set(finals)
+                    finals.add(domainName + href)
+    return finals
 
