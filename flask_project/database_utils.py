@@ -6,7 +6,7 @@ Adding new records, retrieving all records etc.
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from .models import db, URL, IP_address, Domains
-
+from .config import Config
 
 
 def create_ip_record(ipqs_data: dict):
@@ -64,10 +64,11 @@ def create_domain_record(domain_name: str):
         - ipqs_data (dict): A dictionary containing data about ip address,
         from IP Quality Score Service.
     """
+    current_datetime = datetime.now()
     domain_obj = Domains(
         domain_name=domain_name,
-        record_created_at=datetime.now(),
-        record_updated_at=datetime.now(),
+        record_created_at=current_datetime,
+        record_updated_at=current_datetime,
     )
     db.session.add(domain_obj)
     db.session.commit()
@@ -153,7 +154,7 @@ def check_last_scan(url_record):
     last_scan = url_record.last_scan
     current_time = datetime.now()
     time_since_last_scan = current_time - last_scan
-    return time_since_last_scan > timedelta(hours=24)
+    return time_since_last_scan > timedelta(hours=Config.HOURS)
 
 
 def check_if_record_exists(model, field, value):
