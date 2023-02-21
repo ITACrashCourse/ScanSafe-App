@@ -154,7 +154,7 @@ def check_last_scan(url_record):
     last_scan = url_record.last_scan
     current_time = datetime.now()
     time_since_last_scan = current_time - last_scan
-    return time_since_last_scan > timedelta(hours=Config.HOURS)
+    return time_since_last_scan > timedelta(hours=Config.RESCAN_HOURS)
 
 
 def check_if_record_exists(model, field, value):
