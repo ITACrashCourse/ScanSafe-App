@@ -51,6 +51,7 @@ class Config(object):
     IPQS_SECRET_KEY = get_ipqs_secret_key()
     HOSTNAME = os.environ.get("HOSTNAME", "localhost")
     PORT = os.environ.get("PORT", "5000")
+    HOURS = 24 # MUST BE INT
 
 
 class DevelopmentConfig(Config):
