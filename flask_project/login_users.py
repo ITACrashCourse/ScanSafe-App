@@ -3,6 +3,7 @@ login_users.py
 This module contains all function for user register/login
 """
 import re 
+from email_validator import validate_email, EmailNotValidError
 from .config import RegularExpression
 from .database_utils import (
          create_user, 
@@ -66,13 +67,21 @@ def validation_pass(password):
 
 def validation_email(email):
     """
-    Validation give emial
-    It shluld has syntax similar to: name@domain.com
-
+    Validation give emial  addres
+    
     :Parameters:
         - email (string)
     :Return:
         - True/False
     """
-    regex = RegularExpression.REGEX_EMAIL
-    return True if regex.match(email) else False
+    try:
+        validation = validate_email(email, check_deliverability=True)
+        email_validation = True
+    except EmailNotValidError as e:
+        email_validation = False
+    return email_validation
+
+    
+
+
+

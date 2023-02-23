@@ -87,5 +87,3 @@ class RegularExpression(Config):
     REGEX_PASS = re.compile(
         r'^\S{8,}$')
     
-    REGEX_EMAIL = re.compile(
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')

@@ -9,7 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 from .models import db, URL, IP_address, Domains, Users
 
 
-
 def create_ip_record(ipqs_data: dict):
     """
     Create an IP address record in the database.
@@ -299,7 +298,8 @@ def create_user (username, password, email):
 
 def if_user_not_registered (username):
     """
-    Function check if given user is already registered
+    Function check if given user don't exist in 
+    database and can be registered
 
     :Parameters:
         - username (string)
@@ -317,7 +317,8 @@ def if_user_not_registered (username):
 
 def if_email_not_registered(email):
     """
-    Function check if given email is already registered
+    Function check if given email don't exist in 
+    database and can be registered
 
     :Parameters:
         - email (string)
