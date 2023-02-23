@@ -5,7 +5,6 @@ This module contains all the routes and view functions for the Flask app.
 import sys
 import logging
 import json
-import yaml
 from flask_smorest import Blueprint
 from flask_project.url_scanner import IPQS, get_domain, extract_urls
 from flask import render_template, request, jsonify
