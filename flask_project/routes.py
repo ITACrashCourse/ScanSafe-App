@@ -5,12 +5,10 @@ This module contains all the routes and view functions for the Flask app.
 import sys
 import logging
 import json
-from flask_project import app
+from flask_smorest import Blueprint
 from flask_project.url_scanner import IPQS, get_domain, extract_urls
 from flask import render_template, request, jsonify
 import validators
-
-from flask_project import app
 
 from .url_scanner import (IPQS, get_domain, get_ip, 
                           url_scan_info_check, url_domains_scan_info_check)
@@ -27,16 +25,29 @@ from .database_utils import (
     update_url_record,
     get_urls_domains,
 )
+from .swagger_doc import(
+    SCAN_TEXT_DOC,
+    HOME_PAGE_DOC,
+    DOMAINS_URLS_QUERY_DOC,
+    SEND_URL_TO_IPQS_DOC,
+    URL_SCAN_INFO_DOC,
+    URL_DOMAINS_SCAN_INFO_DOC
+) 
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 log = logging.getLogger("flask_app")
+blp=Blueprint("ScanSafe endpoints:","Swagger-ui")
+ 
 
-
-@app.route("/")
+@blp.route("/")
+@blp.doc(**HOME_PAGE_DOC)  
 def home_page():
     return render_template('base.html')
 
-@app.route("/scan-text-urls", methods=["POST"])
+
+@blp.route("/scan-text-urls", methods=["POST"])
+@blp.doc(**SCAN_TEXT_DOC)    
 def scan_text_urls():
     """
     This endpoint extracts all URLs from the text and performs a malicious URL scan on each URL using IPQS(). 
@@ -52,7 +63,8 @@ def scan_text_urls():
     return result
     
 
-@app.get('/search')
+@blp.get('/search')
+@blp.doc(**DOMAINS_URLS_QUERY_DOC)
 def domains_urls_query():
     """
     Perform a search for domains and urls associated with IP address that match a threat type.
@@ -61,8 +73,8 @@ def domains_urls_query():
     return jsonify(get_urls_domains(threat_type))
 
 
-
-@app.post("/send_url")
+@blp.post("/send_url")
+@blp.doc(**SEND_URL_TO_IPQS_DOC)
 def send_url_to_IPQS():
     """
     Send a URL to the IPQS API for malicious content scanning.
@@ -108,7 +120,8 @@ def send_url_to_IPQS():
     return jsonify(gather_url_informations(url_record)), 200
 
 
-@app.route("/url_scan_info", methods = ["POST"])
+@blp.route("/url_scan_info", methods = ["POST"])
+@blp.doc(**URL_SCAN_INFO_DOC)
 def url_scan_info():
     """
     Funfction gets URLs names and return scan info from database
@@ -124,7 +137,8 @@ def url_scan_info():
     return json.dumps(url_scan_result)
 
 
-@app.route("/url_domains_scan_info", methods = ["POST"])
+@blp.route("/url_domains_scan_info", methods = ["POST"])
+@blp.doc(**URL_DOMAINS_SCAN_INFO_DOC)
 def url_domains_scan_info():
     """
     Funfction gets URL or domains names and return scan info from database
@@ -138,3 +152,4 @@ def url_domains_scan_info():
     url_domains_list = list(url_domains_input.values())
     url_domains_scan_result = url_domains_scan_info_check(url_domains_list)
     return json.dumps(url_domains_scan_result)
+
