@@ -120,3 +120,45 @@ def url_domains_scan_info_check(url_domains_list):
         else:
             scan_info.append([url,"Wrong input - given string is not URL or domain address"])
     return scan_info
+
+
+def get_subdomains_and_subdirectories(url):
+    """
+    Function returns all sub-URL scraped form page called with given URL
+    :Parameters:
+        - url: URL to given page
+    :Return:
+        - finals(set): all sub-urls scraped from the website
+    """
+
+
+    parsed_uri = urllib.request.urlparse(url)
+    domainName = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+
+    if domainName[-1] == '/':
+        name = domainName[:-1]
+
+    name = name.split('/')[-1]
+    name = name.split('.')[-2:]
+    name = '.' + '.'.join(name)
+
+    reqs = requests.get(url)
+    soup = BeautifulSoup(reqs.text, 'html.parser')
+    
+    finals = {}
+
+    for link in soup.find_all('a'):
+        href = link.get('href')
+
+        if href != None and href[0] != '#' and len(href) > 1:
+            if domainName in href:     # all full links to subdirectories
+                    finals.add(href) 
+            elif name in href:         # subdomains of our domain
+                    finals.add(href) 
+            else:
+                parsed_urii = urllib.request.urlparse(href)
+                Name = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_urii)
+                if Name == ':///':     # relative links to subdirectories
+                    finals.add(domainName + href)
+    return finals
+
