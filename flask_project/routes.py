@@ -8,6 +8,7 @@ import json
 import hashlib
 from flask_session import Session
 from flask_project import app
+from functools import wraps
 
 from flask_project.url_scanner import IPQS, get_domain, extract_urls
 from flask import render_template, request, jsonify, session, redirect, url_for
@@ -154,6 +155,15 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html')
 
+def login_required(funct):
+    @wraps(funct)
+    def decorated_function(*args, **kwargs):
+        if session.get('username'):
+            return funct(*args, **kwargs)
+        else:
+            return redirect(url_for('login'))
+    return decorated_function
+        
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -170,15 +180,13 @@ def login():
     
 
 @app.route("/logout", methods=["GET", "POST"])
+@login_required
 def logout():
-    if session.get('username'):
-        session.pop('username', None)
+    session.pop('username', None)
     return redirect(url_for('login'))
 
 
 @app.route("/main", methods=["GET", "POST"])
+@login_required
 def main():
-    if session.get('username'):
-        return render_template('main.html')
-    else:
-        return redirect(url_for('login'))
+    return render_template('main.html')
